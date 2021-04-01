@@ -1,15 +1,16 @@
 
 // refactoring fetch.js
 
+// 1 april => update error handling on fetch
+
 const btn = document.querySelector('#search');
 btn.addEventListener('click', async function () {
-    let keyword = document.querySelector('input.form-control').value;
-    let movies = await getMovies(keyword);
-    
     try{
+        let keyword = document.querySelector('input.form-control').value;
+        let movies = await getMovies(keyword); 
         updateCards(movies);
-    } catch (e) {
-        alert('Judul yang dicari tidak ditemukan');
+    } catch (err) {
+        alert(err);
     }
 });
 
@@ -17,8 +18,19 @@ btn.addEventListener('click', async function () {
 // fetch pencarian judul
 function getMovies (keyword){
     return fetch(`http://www.omdbapi.com?apikey=8479c7d9&s=${keyword}`)
-        .then(result => result.json())
-        .then(data => data.Search)
+        .then(result => {
+            if (!result.ok){
+                throw new Error(result.statusText);
+            }
+            return result.json();
+        })
+        .then(data => {
+            console.log(data);
+            if (data.Response === "False"){
+                throw new Error(data.Error);
+            }
+            return data.Search
+        })
 }
 
 function updateCards (movies){
