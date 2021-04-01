@@ -1,5 +1,5 @@
-// Template literals latihan
 
+// Template literals latihan
 
 // 1. html fragments biasa
 // const nama = "Hanif";
